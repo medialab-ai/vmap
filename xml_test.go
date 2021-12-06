@@ -18,6 +18,7 @@ func TestParsingSimple(t *testing.T) {
 		t.FailNow()
 	}
 
+	// this is 2 because the number of ad breaks is 2
 	is.Equal(2, len(vmap.AdBreak))
 	adBreak := vmap.AdBreak[0]
 	is.Equal(adBreak.TimeOffset.position, OffsetPositionEnd)
@@ -75,6 +76,7 @@ func TestMarshal(t *testing.T) {
 }
 
 const (
+	// vmapPostRollBumper taken from https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side/tags
 	vmapPostRollBumper = `<vmap:VMAP xmlns:vmap="http://www.iab.net/videosuite/vmap" version="1.0">
 	<vmap:AdBreak timeOffset="end" breakType="linear" breakId="postroll">
 	<vmap:AdSource id="postroll-pre-bumper" allowMultipleAds="false" followRedirects="true">
