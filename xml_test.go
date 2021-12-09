@@ -19,8 +19,8 @@ func TestParsingSimple(t *testing.T) {
 	}
 
 	// this is 2 because the number of ad breaks is 2
-	is.Equal(2, len(vmap.AdBreak))
-	adBreak := vmap.AdBreak[0]
+	is.Equal(2, len(vmap.AdBreaks))
+	adBreak := vmap.AdBreaks[0]
 	is.Equal(adBreak.TimeOffset.Position, OffsetPositionEnd)
 	is.Equal("postroll", adBreak.BreakID)
 	is.NotEmpty(adBreak.Extensions.Extension)
@@ -73,6 +73,28 @@ func TestMarshal(t *testing.T) {
 	is.NotEmpty(bytes)
 	is.Nil(xml.Unmarshal(bytes, vmap2))
 	is.EqualValues(vmap1, vmap2)
+}
+
+func TestMarshalLogs(t *testing.T) {
+	t.Parallel()
+	is := assert.New(t)
+	v := &VMAP{
+		Version: "1.0",
+		AdBreaks: []AdBreak{
+			{
+				AdSource: AdSource{
+					AdTagURI: AdTagURI{
+						Text: "https://google.com?json",
+					},
+				},
+			},
+		},
+	}
+	bits, err := xml.Marshal(v)
+	is.Nil(err)
+	if is.NotNil(bits) {
+		t.Logf("%v", string(bits))
+	}
 }
 
 const (

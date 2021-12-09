@@ -31,6 +31,10 @@ const (
 
 // MarshalText implements the encoding.TextMarshaler interface.
 func (off *Offset) MarshalText() ([]byte, error) {
+	if off == nil {
+		return nil, nil
+	}
+
 	if off.Position == OffsetPositionStart || off.Position == OffsetPositionEnd {
 		return []byte(off.Position), nil
 	}
