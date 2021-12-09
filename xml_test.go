@@ -21,7 +21,7 @@ func TestParsingSimple(t *testing.T) {
 	// this is 2 because the number of ad breaks is 2
 	is.Equal(2, len(vmap.AdBreak))
 	adBreak := vmap.AdBreak[0]
-	is.Equal(adBreak.TimeOffset.position, OffsetPositionEnd)
+	is.Equal(adBreak.TimeOffset.Position, OffsetPositionEnd)
 	is.Equal("postroll", adBreak.BreakID)
 	is.NotEmpty(adBreak.Extensions.Extension)
 	source := adBreak.AdSource
@@ -44,10 +44,10 @@ func TestOffSetParsing(t *testing.T) {
 		input    string
 		expected *Offset
 	}{
-		{"position_start", "start", &Offset{position: OffsetPositionStart}},
-		{"position_end", "end", &Offset{position: OffsetPositionEnd}},
-		{"percent", "23%", &Offset{percent: 23}},
-		{"time_duration", "01:02:03", &Offset{timeDur: dur}},
+		{"position_start", "start", &Offset{Position: OffsetPositionStart}},
+		{"position_end", "end", &Offset{Position: OffsetPositionEnd}},
+		{"percent", "23%", &Offset{Percent: 23}},
+		{"time_duration", "01:02:03", &Offset{TimeDur: dur}},
 	}
 
 	for _, c := range cases {

@@ -7,8 +7,8 @@ import (
 // VMAP is used to express the structure of the ad inventory as a set of timed ad breaks
 // within a publishers video content
 type VMAP struct {
-	Version string    `xml:"version,attr"`
-	AdBreak []AdBreak `xml:"AdBreak"`
+	Version  string    `xml:"version,attr"`
+	AdBreaks []AdBreak `xml:"AdBreak"`
 }
 
 // AdBreak is point in time where one or more ads are scheduled for delivery
