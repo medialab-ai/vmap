@@ -1,15 +1,22 @@
 package vmap
 
 import (
+	"bytes"
 	"encoding/xml"
 
 	"github.com/haxqer/vast"
 )
 
+var (
+	defaultXMLNS = []byte(`xmlns="http://www.iab.net/videosuite/vmap"`)
+	fixedXMLNS   = []byte(`xmlns:vmap="http://www.iab.net/videosuite/vmap"`)
+)
+
 // VMAP is used to express the structure of the ad inventory as a set of timed ad breaks
 // within a publishers video content
 type VMAP struct {
-	XMLName  xml.Name  `xml:"http://www.iab.net/videosuite/vmap vmap:VMAP"`
+	XMLName xml.Name `xml:"http://www.iab.net/videosuite/vmap vmap:VMAP"`
+	// Version should probably be 1.0
 	Version  string    `xml:"version,attr"`
 	AdBreaks []AdBreak `xml:"AdBreak"`
 }
@@ -58,11 +65,23 @@ type Tracking struct {
 
 // Extensions is a list of extension objects
 type Extensions struct {
-	Extension []Extension `xml:"Extension"`
+	Extension []Extension `xml:"vmap:Extension"`
 }
 
 // Extension is used to describe custom functionality contain in the object
 type Extension struct {
-	XMLName xml.Name `xml:"vmap:vmap:Extension"`
+	XMLName xml.Name `xml:"vmap:Extension"`
 	Type    string   `xml:"type,attr"`
+}
+
+// Marshal is a helper function to generate XML that will actually be valid. currently there is no
+// way to create a namespace prefix in golang :(
+// https://github.com/golang/go/issues/11496
+func (v *VMAP) Marshal() ([]byte, error) {
+	bits, err := xml.Marshal(v)
+	if err != nil {
+		return nil, err
+	}
+
+	return bytes.Replace(bits, defaultXMLNS, fixedXMLNS, 1), nil
 }

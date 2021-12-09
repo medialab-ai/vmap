@@ -75,6 +75,7 @@ func TestMarshal(t *testing.T) {
 	is.EqualValues(vmap1, vmap2)
 }
 
+// TestMarshalLogs is a helper test to log the output of a marshalled struct
 func TestMarshalLogs(t *testing.T) {
 	t.Parallel()
 	is := assert.New(t)
@@ -90,7 +91,7 @@ func TestMarshalLogs(t *testing.T) {
 			},
 		},
 	}
-	bits, err := xml.Marshal(v)
+	bits, err := v.Marshal()
 	is.Nil(err)
 	if is.NotNil(bits) {
 		t.Logf("%v", string(bits))
