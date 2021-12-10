@@ -19,9 +19,9 @@ func TestParsingSimple(t *testing.T) {
 	}
 
 	// this is 2 because the number of ad breaks is 2
-	is.Equal(2, len(vmap.AdBreak))
-	adBreak := vmap.AdBreak[0]
-	is.Equal(adBreak.TimeOffset.position, OffsetPositionEnd)
+	is.Equal(2, len(vmap.AdBreaks))
+	adBreak := vmap.AdBreaks[0]
+	is.Equal(adBreak.TimeOffset.Position, OffsetPositionEnd)
 	is.Equal("postroll", adBreak.BreakID)
 	is.NotEmpty(adBreak.Extensions.Extension)
 	source := adBreak.AdSource
@@ -44,10 +44,10 @@ func TestOffSetParsing(t *testing.T) {
 		input    string
 		expected *Offset
 	}{
-		{"position_start", "start", &Offset{position: OffsetPositionStart}},
-		{"position_end", "end", &Offset{position: OffsetPositionEnd}},
-		{"percent", "23%", &Offset{percent: 23}},
-		{"time_duration", "01:02:03", &Offset{timeDur: dur}},
+		{"position_start", "start", &Offset{Position: OffsetPositionStart}},
+		{"position_end", "end", &Offset{Position: OffsetPositionEnd}},
+		{"percent", "23%", &Offset{Percent: 23}},
+		{"time_duration", "01:02:03", &Offset{TimeDur: dur}},
 	}
 
 	for _, c := range cases {
@@ -73,6 +73,29 @@ func TestMarshal(t *testing.T) {
 	is.NotEmpty(bytes)
 	is.Nil(xml.Unmarshal(bytes, vmap2))
 	is.EqualValues(vmap1, vmap2)
+}
+
+// TestMarshalLogs is a helper test to log the output of a marshalled struct
+func TestMarshalLogs(t *testing.T) {
+	t.Parallel()
+	is := assert.New(t)
+	v := &VMAP{
+		Version: "1.0",
+		AdBreaks: []AdBreak{
+			{
+				AdSource: AdSource{
+					AdTagURI: AdTagURI{
+						Text: "https://google.com?json",
+					},
+				},
+			},
+		},
+	}
+	bits, err := v.Marshal()
+	is.Nil(err)
+	if is.NotNil(bits) {
+		t.Logf("%v", string(bits))
+	}
 }
 
 const (

@@ -13,9 +13,9 @@ type (
 
 	// Offset is a VAMP duration expressed as  hh:mm:ss
 	Offset struct {
-		timeDur  Duration
-		position OffsetPosition
-		percent  int
+		TimeDur  Duration
+		Position OffsetPosition
+		Percent  int
 	}
 
 	// OffsetPosition is for either passing start/end as the position of the ad
@@ -31,15 +31,19 @@ const (
 
 // MarshalText implements the encoding.TextMarshaler interface.
 func (off *Offset) MarshalText() ([]byte, error) {
-	if off.position == OffsetPositionStart || off.position == OffsetPositionEnd {
-		return []byte(off.position), nil
+	if off == nil {
+		return nil, nil
 	}
 
-	if off.percent != 0 {
-		return []byte(fmt.Sprintf("%d%%", off.percent)), nil
+	if off.Position == OffsetPositionStart || off.Position == OffsetPositionEnd {
+		return []byte(off.Position), nil
 	}
 
-	dur := off.timeDur
+	if off.Percent != 0 {
+		return []byte(fmt.Sprintf("%d%%", off.Percent)), nil
+	}
+
+	dur := off.TimeDur
 	h := dur / Duration(time.Hour)
 	m := dur % Duration(time.Hour) / Duration(time.Minute)
 	s := dur % Duration(time.Minute) / Duration(time.Second)
@@ -55,17 +59,17 @@ func (off *Offset) UnmarshalText(data []byte) (err error) {
 	s := string(data)
 	switch OffsetPosition(s) {
 	case OffsetPositionStart, OffsetPositionEnd:
-		off.position = OffsetPosition(s)
+		off.Position = OffsetPosition(s)
 		return nil
 	}
 
 	if strings.Contains(s, "%") {
 		s = strings.Replace(s, "%", "", -1)
-		off.percent, err = strconv.Atoi(s)
+		off.Percent, err = strconv.Atoi(s)
 		return err
 	}
 
-	dur := &off.timeDur
+	dur := &off.TimeDur
 	s = strings.TrimSpace(s)
 	if s == "" || strings.ToLower(s) == "undefined" {
 		*dur = 0
