@@ -40,18 +40,11 @@ func (off *Offset) MarshalText() ([]byte, error) {
 	}
 
 	if off.Percent != 0 {
-		return []byte(fmt.Sprintf("%d%%", off.Percent)), nil
+		return FormatPercent((off.Percent)), nil
 	}
 
 	dur := off.TimeDur
-	h := dur / Duration(time.Hour)
-	m := dur % Duration(time.Hour) / Duration(time.Minute)
-	s := dur % Duration(time.Minute) / Duration(time.Second)
-	ms := dur % Duration(time.Second) / Duration(time.Millisecond)
-	if ms == 0 {
-		return []byte(fmt.Sprintf("%02d:%02d:%02d", h, m, s)), nil
-	}
-	return []byte(fmt.Sprintf("%02d:%02d:%02d.%03d", h, m, s, ms)), nil
+	return FormatTimeDur(dur), nil
 }
 
 // UnmarshalText implements the encoding.TextUnmarshaler interface.
@@ -97,4 +90,21 @@ func (off *Offset) UnmarshalText(data []byte) (err error) {
 		f *= 60
 	}
 	return nil
+}
+
+// FormatPercent returns the percent x as a string in the form of x%.
+func FormatPercent(percent int) []byte {
+	return []byte(fmt.Sprintf("%d%%", percent))
+}
+
+// FormatTimeDur returns the time duration as a string in the form of hh:mm:ss:millisec.
+func FormatTimeDur(timeDur Duration) []byte {
+	h := timeDur / Duration(time.Hour)
+	m := timeDur % Duration(time.Hour) / Duration(time.Minute)
+	s := timeDur % Duration(time.Minute) / Duration(time.Second)
+	ms := timeDur % Duration(time.Second) / Duration(time.Millisecond)
+	if ms == 0 {
+		return []byte(fmt.Sprintf("%02d:%02d:%02d", h, m, s))
+	}
+	return []byte(fmt.Sprintf("%02d:%02d:%02d.%03d", h, m, s, ms))
 }
