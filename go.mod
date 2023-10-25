@@ -3,8 +3,8 @@ module github.com/medialab-ai/vmap
 go 1.19
 
 require (
-    github.com/haxqer/vast v0.0.0-20210112035552-8a0e54856bf8
-    github.com/stretchr/testify v1.8.4
+	github.com/haxqer/vast v0.0.0-20220726014210-128aa4704401
+	github.com/stretchr/testify v1.8.4
 )
 
 require (
